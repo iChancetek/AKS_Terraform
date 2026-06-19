@@ -1,0 +1,41 @@
+name: "Terraform Destroy"
+
+on:
+  workflow_dispatch: # Allows you to run this workflow manually from the Actions tab
+
+env:
+  AWS_REGION: "us-east-1"
+  TERRAFORM_VERSION: "1.9.0"
+
+permissions:
+  id-token: write # Required for AWS OIDC connection
+  contents: read  # Required to checkout code
+
+jobs:
+  destroy:
+    name: "Terraform Destroy"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform-eks
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::777311273950:role/GitHubActions-Terraform-Role
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
