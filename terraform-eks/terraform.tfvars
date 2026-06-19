@@ -77,8 +77,9 @@ enable_private_access = true
 
 # Global tags applied to all resources
 tags = {
-  Environment = "production"
-  Project     = "eks-infrastructure"
-  ManagedBy   = "terraform"
-  Owner       = "Platform-Team"
+  Environment  = "production"
+  Project      = "eks-infrastructure"
+  ManagedBy    = "terraform"
+  "Created by" = "Terraform"
+  Owner        = "Platform-Team"
 }
