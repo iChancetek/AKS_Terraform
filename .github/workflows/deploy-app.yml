@@ -2,9 +2,11 @@ name: "Deploy StrideIQ to EKS"
 
 on:
   push:
-    paths:
-      - 'k8s/**'
+    branches:
+      - main
   workflow_dispatch: # Allows manual trigger from the GitHub Actions UI
+  repository_dispatch: # Allows this pipeline to be triggered automatically via API from another repository!
+    types: [deploy-app]
 
 env:
   AWS_REGION: "us-east-1"
@@ -41,3 +43,6 @@ jobs:
       - name: Deploy to EKS
         run: |
           kubectl apply -f k8s/strideiq-deployment.yaml
+          
+          # Force Kubernetes to restart the pods so it pulls the absolute newest "latest" image from DockerHub
+          kubectl rollout restart deployment strideiq
